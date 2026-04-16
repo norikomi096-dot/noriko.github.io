@@ -34,5 +34,5 @@ _start:
 
 if you [click here](demo.html) you can see all my deisgn ideas
 
-also if you want you can check all my "hacking" tricks [here](/noriko.github.io/hack/)
+also if you want you can check all my "hacking" tricks [here](/hack/)
 
