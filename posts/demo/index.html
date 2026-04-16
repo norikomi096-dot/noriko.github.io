@@ -1,1 +1,156 @@
-<h1>Demo should be located here :3</h1>
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>hack@hacked:$</title>
+<link rel="stylesheet" href="/css/main.css" crossorigin="anonymous">
+<script src="main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js" integrity="sha256-I80MfYNyY7nq65buLZzPopadqj&#43;gD6HB/ocBqbhyUaE=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+  <header>
+    <h1>hack@hacked:$</h1>
+
+  <nav>
+    <ul>
+  <span class="menu-bracket">[</span> 
+  <ul style="list-style: none; padding: 0; margin: 0; display: inline-flex; align-items: center;">
+      <li class="menu-item"> 
+        <a href="/">home</a>
+      </li>
+      <li class="menu-item"> 
+        <a aria-current="true" class="ancestor" href="/posts/">posts</a>
+      </li>
+      <li class="menu-item"> 
+        <a href="/tags/">tags</a>
+      </li>
+      <li class="menu-item"> 
+        <a href="/about/">about</a>
+      </li>
+  </ul>
+  <span class="menu-bracket">]</span> 
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+      <div class="tags">
+      🏷️
+        <a href="/tags/write-up" class="tag">write-up</a>
+        <a href="/tags/pwn" class="tag">pwn</a>
+        <a href="/tags/crypto" class="tag">crypto</a>
+      </div>
+    
+    
+    <h1>Hacking useless things :3</h1>
+  
+
+  
+
+  <h2 id="information">Information</h2>
+<p>Difficulty: Medium</p>
+<p>Tags: pwn, crypto</p>
+<p>Author: aaaa</p>
+<p><img src="/images/2025-12-25-root-xmas/day7.gif" alt=""></p>
+<blockquote>
+<p>Just a test as always :3</p>
+</blockquote>
+<h2 id="solution">Solution</h2>
+<p>We&rsquo;re provided with a <code>launcher</code> and 3 games.</p>
+<p>Here is some pseudocode for the <code>launcher</code>:</p>
+<img src="https://maldev.nl/posts/nimplant-sweet-dreams/imgs/sleep-obfuscation.png"/>
+<p>let's just start</p>
+<div class="highlight"><pre tabindex="0" style="color:#d8dee9;background-color:#2e3440;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>_QWORD <span style="color:#81a1c1">*</span><span style="color:#81a1c1;font-weight:bold">__fastcall</span> <span style="color:#88c0d0">read_parse_and_check_file</span><span style="color:#eceff4">(</span><span style="color:#81a1c1;font-weight:bold">const</span> <span style="color:#81a1c1">char</span> <span style="color:#81a1c1">*</span>file<span style="color:#eceff4">,</span> _QWORD <span style="color:#81a1c1">*</span>start_ptr<span style="color:#eceff4">,</span> _QWORD <span style="color:#81a1c1">*</span>sig_ptr<span style="color:#eceff4">,</span> _QWORD <span style="color:#81a1c1">*</span>sig_idx<span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1">char</span> <span style="color:#81a1c1">*</span>ptr<span style="color:#eceff4">;</span> <span style="color:#616e87;font-style:italic">// [rsp+28h] [rbp-18h]
+</span></span></span><span style="display:flex;"><span><span style="color:#616e87;font-style:italic"></span>    <span style="color:#81a1c1;font-weight:bold">__int64</span> size<span style="color:#eceff4">;</span> <span style="color:#616e87;font-style:italic">// [rsp+30h] [rbp-10h]
+</span></span></span><span style="display:flex;"><span><span style="color:#616e87;font-style:italic"></span>    FILE <span style="color:#81a1c1">*</span>stream<span style="color:#eceff4">;</span> <span style="color:#616e87;font-style:italic">// [rsp+38h] [rbp-8h]
+</span></span></span><span style="display:flex;"><span><span style="color:#616e87;font-style:italic"></span>
+</span></span><span style="display:flex;"><span>    stream <span style="color:#81a1c1">=</span> <span style="color:#88c0d0">fopen</span><span style="color:#eceff4">(</span>file<span style="color:#eceff4">,</span> <span style="color:#a3be8c">&#34;rb&#34;</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">if</span> <span style="color:#eceff4">(</span> <span style="color:#81a1c1">!</span>stream <span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">perror</span><span style="color:#eceff4">(</span><span style="color:#a3be8c">&#34;[ERROR] Failed to open signed file&#34;</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">exit</span><span style="color:#eceff4">(</span><span style="color:#81a1c1">-</span><span style="color:#b48ead">1</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">if</span> <span style="color:#eceff4">(</span> <span style="color:#88c0d0">fseek</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">,</span> <span style="color:#b48ead">0</span><span style="color:#eceff4">,</span> <span style="color:#b48ead">2</span><span style="color:#eceff4">)</span> <span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">perror</span><span style="color:#eceff4">(</span><span style="color:#a3be8c">&#34;[ERROR] fseek end&#34;</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fclose</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">exit</span><span style="color:#eceff4">(</span><span style="color:#81a1c1">-</span><span style="color:#b48ead">1</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">}</span>
+</span></span><span style="display:flex;"><span>    size <span style="color:#81a1c1">=</span> <span style="color:#88c0d0">ftell</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">if</span> <span style="color:#eceff4">(</span> size <span style="color:#81a1c1">&lt;</span> <span style="color:#b48ead">0</span> <span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">perror</span><span style="color:#eceff4">(</span><span style="color:#a3be8c">&#34;[ERROR] ftell&#34;</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fclose</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">exit</span><span style="color:#eceff4">(</span><span style="color:#81a1c1">-</span><span style="color:#b48ead">1</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#88c0d0">rewind</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">if</span> <span style="color:#eceff4">(</span> size <span style="color:#81a1c1">&lt;=</span> <span style="color:#b48ead">256</span> <span style="color:#81a1c1">||</span> size <span style="color:#81a1c1">&gt;</span> <span style="color:#b48ead">0x100000</span> <span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fwrite</span><span style="color:#eceff4">(</span><span style="color:#a3be8c">&#34;[ERROR] Invalid file size.</span><span style="color:#ebcb8b">\n</span><span style="color:#a3be8c">&#34;</span><span style="color:#eceff4">,</span> <span style="color:#b48ead">1u</span><span style="color:#eceff4">,</span> <span style="color:#b48ead">0x1Bu</span><span style="color:#eceff4">,</span> stderr<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fclose</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">exit</span><span style="color:#eceff4">(</span><span style="color:#81a1c1">-</span><span style="color:#b48ead">1</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">}</span>
+</span></span><span style="display:flex;"><span>    ptr <span style="color:#81a1c1">=</span> <span style="color:#88c0d0">malloc</span><span style="color:#eceff4">(</span>size<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">if</span> <span style="color:#eceff4">(</span> <span style="color:#81a1c1">!</span>ptr <span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fwrite</span><span style="color:#eceff4">(</span><span style="color:#a3be8c">&#34;[ERROR] malloc failed</span><span style="color:#ebcb8b">\n</span><span style="color:#a3be8c">&#34;</span><span style="color:#eceff4">,</span> <span style="color:#b48ead">1u</span><span style="color:#eceff4">,</span> <span style="color:#b48ead">0x16u</span><span style="color:#eceff4">,</span> stderr<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fclose</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">exit</span><span style="color:#eceff4">(</span><span style="color:#81a1c1">-</span><span style="color:#b48ead">1</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">if</span> <span style="color:#eceff4">(</span> <span style="color:#88c0d0">fread</span><span style="color:#eceff4">(</span>ptr<span style="color:#eceff4">,</span> <span style="color:#b48ead">1u</span><span style="color:#eceff4">,</span> size<span style="color:#eceff4">,</span> stream<span style="color:#eceff4">)</span> <span style="color:#81a1c1">!=</span> size <span style="color:#eceff4">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">perror</span><span style="color:#eceff4">(</span><span style="color:#a3be8c">&#34;[ERROR] fread&#34;</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">free</span><span style="color:#eceff4">(</span>ptr<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">fclose</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#88c0d0">exit</span><span style="color:#eceff4">(</span><span style="color:#81a1c1">-</span><span style="color:#b48ead">1</span><span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#eceff4">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#88c0d0">fclose</span><span style="color:#eceff4">(</span>stream<span style="color:#eceff4">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1">*</span>sig_idx <span style="color:#81a1c1">=</span> size <span style="color:#81a1c1">-</span> <span style="color:#b48ead">256</span><span style="color:#eceff4">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1">*</span>start_ptr <span style="color:#81a1c1">=</span> ptr<span style="color:#eceff4">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1">*</span>sig_ptr <span style="color:#81a1c1">=</span> <span style="color:#81a1c1">&amp;</span>ptr<span style="color:#eceff4">[</span><span style="color:#81a1c1">*</span>sig_idx<span style="color:#eceff4">];</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#81a1c1;font-weight:bold">return</span> sig_ptr<span style="color:#eceff4">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#eceff4">}</span>
+</span></span></code></pre></div>
+<p>After some research, it becomes clear that this challenge is based upon an actual vulnerability that used to be present in <a href="https://wiibrew.org/wiki/IOS">IOS</a>: <a href="https://wiibrew.org/wiki/Signing_bug">The Trucha bug</a>.</p>
+<p>The core of the vulnerability exploits a flaw in the behaviour of the <code>strncmp()</code> function: the function returns prematurely whenever it encouters a null byte on <em>either</em> of the two strings its comparing (normally at the end). However, because we&rsquo;re not passing ASCII strings but binary hashes to the function, we can this behavior if either of two hashes compared (the signature hash and the <code>game_hash</code>) contains a null byte (<code>00</code>) at any position.</p>
+<p>However, <code>strncmp</code> returns whenever it encounters a null byte (<code>00</code>) on <em>either</em> of the strings it compares, <strong>but</strong> it doesn&rsquo;t return <code>0</code> (strings are equal) unless the bytes it compared actually are the same, even if it returned prematurely.</p>
+<p>To summarize:</p>
+<pre tabindex="0"><code>$ ./demo/exploit.py
+[i] running our exploit....
+[i] DECRYPTED HASH:
+        00 59 DF 5E D5 96 49 B0
+        F3 88 65 68 F4 0A 8F AF
+        50 FF 4B 37 C9 D1 9C BB
+        2D 84 24 03 5B 27 70 66
+...
+</code></pre>
+<pre tabindex="0"><code>$ python3 solve.py
+[*] Payload size: 16016 bytes
+[*] Signature size: 256 bytes (Expected: 256)
+[+] Nonce found in 46 iterations.
+[+] Nonce (hex): 2e
+[+] Associated hash: 00cbf278e41a69596c814a573acfb7ba5fcfe228357f2c0f25d3ce6e7feb4fad
+</code></pre><p>We send the locally compiled payload to the remote server:</p>
+    
+  </main>
+  <footer>
+    
+  </footer>
+</body>
+</html>
